@@ -1,4 +1,4 @@
-package edu.iastate.cs311.hw2;
+
 
 /**
  * @author 
@@ -116,6 +116,9 @@ public class Heap<E extends Comparable<? super E>>
   // If the size of the heap is less than 2, it throws new NoSuchElementException().
   public  E getLastInternal()
   {
+    E ret = null;
+
+    return ret;
   }
 
   public E removeMin()
