@@ -1,3 +1,40 @@
+class Table extends React.Component {
+
+
+    render() {
+        var format = function(car) {
+            return (
+
+                    <tr key={car}>
+                        <th>{car.manufacturer}</th>
+                        <th>{car.model}</th>
+                        <th>{car.year}</th>
+                        <th>{car.stock}</th>
+                        <th>${car.price}.00</th>
+                        <td><button type="button">Increment</button></td>
+                    </tr>
+            );
+        }
+
+        return(
+            <table>
+                <tbody align="left">
+                    <tr>
+                        <th>manufacturer</th>
+                        <th>model</th>
+                        <th>year</th>
+                        <th>stock</th>
+                        <th>price</th>
+                        <th>Option</th>
+                    </tr>
+                    {this.props.cars.map(function(car){return format(car)})}
+                </tbody>
+            </table>
+
+        );
+    }
+}
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -88,10 +125,14 @@ class App extends React.Component {
         };
     }
 
+    //
+
+    //
     render() {
         return (
-            <p>Modify this file.</p>
-
+            <div>
+                <Table cars={this.state.cars}></Table>
+            </div>
         );
     };
 }
