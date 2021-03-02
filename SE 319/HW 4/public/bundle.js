@@ -56,7 +56,7 @@ var Table = function (_React$Component) {
                         null,
                         React.createElement(
                             "button",
-                            { type: "button" },
+                            { type: "button", onSubmit: this.props.incrementState(car) },
                             "Increment"
                         )
                     )
@@ -185,21 +185,41 @@ var App = function (_React$Component2) {
                 "price": 8000
             }]
         };
+        _this2.incrementState = _this2.incrementState.bind(_this2);
         return _this2;
     }
 
-    //
-
-    //
+    //helper function
 
 
     _createClass(App, [{
+        key: "incrementState",
+        value: function incrementState(car) {
+            console.log("running increment State on car " + car.model);
+            //copy current state
+            var newCars = this.state.cars.slice();
+            //find the index with matching car
+            var match = function match(x) {
+                return x.model === car.model;
+            };
+            var index = this.state.cars.findIndex(match);
+            if (index != -1) {
+                //if car is found
+                newCars[index].stock++; //increment stock
+                this.setState({ cars: newCars });
+            } else {
+                console.log("car " + car + " not found!");
+            }
+        }
+        //
+
+    }, {
         key: "render",
         value: function render() {
             return React.createElement(
                 "div",
                 null,
-                React.createElement(Table, { cars: this.state.cars })
+                React.createElement(Table, { cars: this.state.cars, incrementState: this.incrementState })
             );
         }
     }]);

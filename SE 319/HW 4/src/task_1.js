@@ -11,7 +11,7 @@ class Table extends React.Component {
                         <th>{car.year}</th>
                         <th>{car.stock}</th>
                         <th>${car.price}.00</th>
-                        <td><button type="button">Increment</button></td>
+                        <td><button type="button" onSubmit={this.props.incrementState(car)}>Increment</button></td>
                     </tr>
             );
         }
@@ -28,14 +28,20 @@ class Table extends React.Component {
                         <th>Option</th>
                     </tr>
                     {this.props.cars.map(function(car){return format(car)})}
+
                 </tbody>
+
             </table>
+
+
 
         );
     }
 }
 
 class App extends React.Component {
+
+
     constructor(props) {
         super(props);
 
@@ -123,15 +129,30 @@ class App extends React.Component {
 
             ]
         };
+        this.incrementState = this.incrementState.bind(this);
     }
 
-    //
+    //helper function
+    incrementState(car) {
+        console.log("running increment State on car " + car.model);
+        //copy current state
+        const newCars = this.state.cars.slice();
+        //find the index with matching car
+        const match = (x) => x.model === car.model;
+        const index = this.state.cars.findIndex(match);
+        if(index != -1) { //if car is found
+            newCars[index].stock++;//increment stock
+            this.setState({cars: newCars});
+        }else {
+            console.log("car " + car + " not found!");
+        }
 
+    }
     //
     render() {
         return (
             <div>
-                <Table cars={this.state.cars}></Table>
+                <Table cars={this.state.cars} incrementState={this.incrementState}></Table>
             </div>
         );
     };
