@@ -21,6 +21,7 @@ var Table = function (_React$Component) {
         key: "render",
         value: function render() {
             var format = function format(car) {
+
                 return React.createElement(
                     "tr",
                     { key: car },
@@ -56,7 +57,7 @@ var Table = function (_React$Component) {
                         null,
                         React.createElement(
                             "button",
-                            { type: "button", onSubmit: this.props.incrementState(car) },
+                            { type: "button" },
                             "Increment"
                         )
                     )
@@ -203,7 +204,7 @@ var App = function (_React$Component2) {
                 return x.model === car.model;
             };
             var index = this.state.cars.findIndex(match);
-            if (index != -1) {
+            if (index !== -1) {
                 //if car is found
                 newCars[index].stock++; //increment stock
                 this.setState({ cars: newCars });
