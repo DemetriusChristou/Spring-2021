@@ -1,4 +1,4 @@
-
+package edu.iastate.cs311.hw2;
 
 /**
  * @author 
@@ -7,6 +7,7 @@
  *  written by Xiaoqiu Huang for Com S 311 in Spring 2021.
  */
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -94,6 +95,25 @@ public class Heap<E extends Comparable<? super E>>
   // Moves the last element up to the proper place so that the heap property holds.
   private void percolateUp()
   {
+    int curIndex = list.size() -1;
+    E element = list.get(curIndex);
+    while(true) {
+      //get parent
+      int parentIndex = (int)(curIndex - 1)/2;
+      if(parentIndex < 0) {
+        return; //if parent index is under 0 you are at the top already
+      }
+      E parent = list.get(parentIndex);
+      //compare curIndex with parent
+      if(element.compareTo(parent) < 0) {
+        //parent is bigger so swap
+        swap(parentIndex, curIndex);
+        //cur index is now the parents
+        curIndex = parentIndex;
+      } else {
+        return; //the element is in the correct spot
+      }
+    }
   }
 
   // Swaps the elements at the parent and child indexes.
@@ -116,7 +136,11 @@ public class Heap<E extends Comparable<? super E>>
   // If the size of the heap is less than 2, it throws new NoSuchElementException().
   public  E getLastInternal()
   {
-    E ret = null;
+    if(list.size() < 2) {
+      throw new NoSuchElementException("heap size is less than 2 there is no last nonleaf node");
+    }
+    int index = (int)(list.size()/2) - 1;
+    E ret = list.get(index);
 
     return ret;
   }
@@ -138,6 +162,16 @@ public class Heap<E extends Comparable<? super E>>
   // If the size of the heap is less than 2, it throws new NoSuchElementException().
   public void trimEveryLeaf()
   {
+    if(list.size() < 2) {
+      throw new NoSuchElementException("heap size is less than 2 there is no last nonleaf node");
+    }
+    int indexOfFirstLeaf = (int)(list.size()/2);
+    //we need to remove every element after this node
+
+    while(list.size() != indexOfFirstLeaf) {
+      list.remove(list.size()-1);
+    }
+
   }
 
   // TODO: O(log n)
@@ -146,6 +180,54 @@ public class Heap<E extends Comparable<? super E>>
   {
     if ( start < 0 || start >= list.size() )
       throw new RuntimeException("start < 0 or >= n");
+    E element = list.get(start);
+
+    while(true) {
+        //get children
+      int leftChildIndex = 2*start + 1;
+      E leftChild;
+
+      if(leftChildIndex >= list.size()) {
+        //if left child is null current element is a leaf
+        return;
+      } else {
+       leftChild = list.get(leftChildIndex);
+      }
+      int rightChildIndex = 2*start + 2;
+      E rightChild;
+      if(rightChildIndex >= list.size()) {
+        rightChild = null;
+      } else {
+        rightChild = list.get(rightChildIndex);
+      }
+
+      //find smallest child
+      int childIndex;
+      E child;
+
+      if( rightChild == null || leftChild.compareTo(rightChild) < 0) {
+        //left smaller
+        childIndex = leftChildIndex;
+        child = leftChild;
+      } else {
+        //right smaller
+        childIndex = rightChildIndex;
+        child = rightChild;
+      }
+
+      //compare element against child
+      if(element.compareTo(child) > 0) {
+        //element bigger
+        swap(start, childIndex);
+        start = childIndex;
+      } else {
+        //element is where it should be
+        return;
+      }
+
+    }
+
+
   }
 
   // Shows the tree used to implement the heap with the root element at the leftmost column
@@ -178,5 +260,17 @@ public class Heap<E extends Comparable<? super E>>
     aList.clear();
     while ( ! aHeap.isEmpty() )
       aList.add( aHeap.removeMin() );
+  }
+
+  //creates a copy of the array for testing purposes
+  public ArrayList<E> HeapAsArray() {
+      ArrayList<E> ret = new ArrayList<>();
+      Iterator<E> it = list.iterator();
+
+      while(it.hasNext()){
+        ret.add(it.next());
+      }
+
+      return ret;
   }
 } // Heap
