@@ -22,10 +22,10 @@ public class HeapTests {
         ArrayList<Integer> expected = new ArrayList<>();
 
         expected.add(1);
-        expected.add(3);
-        expected.add(5);
-        expected.add(1);
         expected.add(2);
+        expected.add(7);
+        expected.add(5);
+        expected.add(3);
 
         Assert.assertArrayEquals(key.toArray(), expected.toArray());
     }
@@ -78,6 +78,23 @@ public class HeapTests {
         }
         pq.removeMin();
         pq.removeMin();
-        pq.showHeap();
+
+        ArrayList<Integer> expected = new ArrayList<>();
+        expected.add(2);
+        expected.add(3);
+        expected.add(4);
+        expected.add(5);
+        Assert.assertArrayEquals(expected.toArray(), pq.HeapAsArray().toArray());
+
+        pq.add(0);
+        expected.clear();
+        expected.add(0);
+        expected.add(2);
+        expected.add(4);
+        expected.add(5);
+        expected.add(3);
+
+        Assert.assertArrayEquals(expected.toArray(), pq.HeapAsArray().toArray());
+
     }
 }

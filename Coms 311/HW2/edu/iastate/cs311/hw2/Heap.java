@@ -137,7 +137,7 @@ public class Heap<E extends Comparable<? super E>>
   public  E getLastInternal()
   {
     if(list.size() < 2) {
-      throw new NoSuchElementException("heap size is less than 2 there is no last nonleaf node");
+      throw new NoSuchElementException();
     }
     int index = (int)(list.size()/2) - 1;
     E ret = list.get(index);
@@ -163,7 +163,7 @@ public class Heap<E extends Comparable<? super E>>
   public void trimEveryLeaf()
   {
     if(list.size() < 2) {
-      throw new NoSuchElementException("heap size is less than 2 there is no last nonleaf node");
+      throw new NoSuchElementException();
     }
     int indexOfFirstLeaf = (int)(list.size()/2);
     //we need to remove every element after this node
