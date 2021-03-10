@@ -20,48 +20,59 @@ var Table = function (_React$Component) {
     _createClass(Table, [{
         key: "render",
         value: function render() {
-            var format = function format(car) {
+            var _this2 = this;
 
-                return React.createElement(
-                    "tr",
-                    { key: car },
-                    React.createElement(
-                        "th",
-                        null,
-                        car.manufacturer
-                    ),
-                    React.createElement(
-                        "th",
-                        null,
-                        car.model
-                    ),
-                    React.createElement(
-                        "th",
-                        null,
-                        car.year
-                    ),
-                    React.createElement(
-                        "th",
-                        null,
-                        car.stock
-                    ),
-                    React.createElement(
-                        "th",
-                        null,
-                        "$",
-                        car.price,
-                        ".00"
-                    ),
-                    React.createElement(
-                        "td",
-                        null,
+            var loop = function loop(cars, increment) {
+                var ret = [];
+
+                for (var i = 0; i < cars.length; i++) {
+
+                    var car = cars[i];
+
+                    var key = car.manufacturer + car.year + car.model;
+                    ret.push(React.createElement(
+                        "tr",
+                        { key: key },
                         React.createElement(
-                            "button",
-                            { type: "button" },
-                            "Increment"
+                            "th",
+                            null,
+                            car.manufacturer
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            car.model
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            car.year
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            car.stock
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            "$",
+                            car.price,
+                            ".00"
+                        ),
+                        React.createElement(
+                            "td",
+                            null,
+                            React.createElement(
+                                "button",
+                                { id: i, type: "button", onClick: increment },
+                                "Increment"
+                            )
                         )
-                    )
-                );
+                    ));
+                }
+
+                return ret;
             };
 
             return React.createElement(
@@ -84,9 +95,15 @@ var Table = function (_React$Component) {
                             "model"
                         ),
                         React.createElement(
-                            "th",
+                            "td",
                             null,
-                            "year"
+                            React.createElement(
+                                "button",
+                                { onClick: function onClick() {
+                                        return _this2.props.sortCars();
+                                    }, style: { background: "none", border: "none", fontWeight: "bolder", fontSize: "16px" } },
+                                "year"
+                            )
                         ),
                         React.createElement(
                             "th",
@@ -104,9 +121,7 @@ var Table = function (_React$Component) {
                             "Option"
                         )
                     ),
-                    this.props.cars.map(function (car) {
-                        return format(car);
-                    })
+                    loop(this.props.cars, this.props.incrementState)
                 )
             );
         }
@@ -121,9 +136,10 @@ var App = function (_React$Component2) {
     function App(props) {
         _classCallCheck(this, App);
 
-        var _this2 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+        var _this3 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-        _this2.state = {
+        _this3.state = {
+            sortState: [0],
             cars: [{
                 "manufacturer": "Toyota",
                 "model": "Rav4",
@@ -186,8 +202,9 @@ var App = function (_React$Component2) {
                 "price": 8000
             }]
         };
-        _this2.incrementState = _this2.incrementState.bind(_this2);
-        return _this2;
+        _this3.incrementState = _this3.incrementState.bind(_this3);
+        _this3.sortCarsByYear = _this3.sortCarsByYear.bind(_this3);
+        return _this3;
     }
 
     //helper function
@@ -195,8 +212,9 @@ var App = function (_React$Component2) {
 
     _createClass(App, [{
         key: "incrementState",
-        value: function incrementState(car) {
-            console.log("running increment State on car " + car.model);
+        value: function incrementState(e) {
+            var car = this.state.cars[e.target.id];
+            console.log("running increment State on car " + car);
             //copy current state
             var newCars = this.state.cars.slice();
             //find the index with matching car
@@ -204,7 +222,7 @@ var App = function (_React$Component2) {
                 return x.model === car.model;
             };
             var index = this.state.cars.findIndex(match);
-            if (index !== -1) {
+            if (index != -1) {
                 //if car is found
                 newCars[index].stock++; //increment stock
                 this.setState({ cars: newCars });
@@ -212,6 +230,33 @@ var App = function (_React$Component2) {
                 console.log("car " + car + " not found!");
             }
         }
+    }, {
+        key: "sortCarsByYear",
+        value: function sortCarsByYear() {
+            var temp = this.state.cars.slice();
+            var temp2 = this.state.cars.slice();
+            if (this.state.sortState == 0) {
+                console.log("state was 0 now 1");
+                //sort cars in accending order
+                temp.sort(function (a, b) {
+                    return a.year.valueOf() < b.year.valueOf() ? 1 : -1;
+                });
+
+                this.state.sortState = 1;
+            } else if (this.state.sortState == 1) {
+                console.log("state was 1 now 0");
+
+                //sort cars in decending order
+                temp.sort(function (a, b) {
+                    return a.year.valueOf() > b.year.valueOf() ? 1 : -1;
+                });
+
+                this.state.sortState = 0;
+            }
+
+            this.setState({ cars: temp });
+        }
+
         //
 
     }, {
@@ -220,7 +265,7 @@ var App = function (_React$Component2) {
             return React.createElement(
                 "div",
                 null,
-                React.createElement(Table, { cars: this.state.cars, incrementState: this.incrementState })
+                React.createElement(Table, { cars: this.state.cars, incrementState: this.incrementState, sortCars: this.sortCarsByYear })
             );
         }
     }]);

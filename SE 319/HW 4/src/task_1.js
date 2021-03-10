@@ -2,19 +2,38 @@ class Table extends React.Component {
 
 
     render() {
-        var format = function(car) {
-            return (
 
-                    <tr key={car}>
+        var loop = function(cars, increment) {
+            var ret = [];
+
+            for(var i = 0; i < cars.length; i++) {
+
+                var car = cars[i];
+
+                var key = car.manufacturer + car.year + car.model;
+                ret.push(
+                    <tr key={key}>
                         <th>{car.manufacturer}</th>
                         <th>{car.model}</th>
                         <th>{car.year}</th>
                         <th>{car.stock}</th>
                         <th>${car.price}.00</th>
-                        <td><button type="button" onSubmit={this.props.incrementState(car)}>Increment</button></td>
+                        <td><button id={i}  type="button" onClick={increment}>Increment</button></td>
                     </tr>
-            );
+                )
+            }
+
+            return(
+                ret
+            )
+
+
         }
+
+
+
+
+
 
         return(
             <table>
@@ -22,12 +41,14 @@ class Table extends React.Component {
                     <tr>
                         <th>manufacturer</th>
                         <th>model</th>
-                        <th>year</th>
+                        <td><button onClick={() => this.props.sortCars()} style={{background: "none",border: "none", fontWeight: "bolder", fontSize: "16px"}}>year</button></td>
                         <th>stock</th>
                         <th>price</th>
                         <th>Option</th>
                     </tr>
-                    {this.props.cars.map(function(car){return format(car)})}
+
+                    {loop(this.props.cars, this.props.incrementState)}
+
 
                 </tbody>
 
@@ -46,6 +67,7 @@ class App extends React.Component {
         super(props);
 
         this.state = {
+            sortState:[0],
             cars: [
                 {
                     "manufacturer": "Toyota",
@@ -130,11 +152,13 @@ class App extends React.Component {
             ]
         };
         this.incrementState = this.incrementState.bind(this);
+        this.sortCarsByYear = this.sortCarsByYear.bind(this);
     }
 
     //helper function
-    incrementState(car) {
-        console.log("running increment State on car " + car.model);
+    incrementState(e) {
+        const car = this.state.cars[e.target.id];
+        console.log("running increment State on car " + car);
         //copy current state
         const newCars = this.state.cars.slice();
         //find the index with matching car
@@ -148,11 +172,34 @@ class App extends React.Component {
         }
 
     }
+
+    sortCarsByYear() {
+        const temp = this.state.cars.slice();
+        const temp2= this.state.cars.slice();
+        if(this.state.sortState == 0) {
+            console.log("state was 0 now 1");
+            //sort cars in accending order
+            temp.sort((a, b) => (a.year.valueOf() < b.year.valueOf()) ? 1 : -1);
+
+            this.state.sortState = 1;
+
+        }else if(this.state.sortState == 1) {
+            console.log("state was 1 now 0");
+
+            //sort cars in decending order
+            temp.sort((a, b) => (a.year.valueOf() > b.year.valueOf()) ? 1 : -1);
+
+            this.state.sortState = 0;
+        }
+
+        this.setState({cars: temp});
+    }
+
     //
     render() {
         return (
             <div>
-                <Table cars={this.state.cars} incrementState={this.incrementState}></Table>
+                <Table cars={this.state.cars} incrementState={this.incrementState} sortCars={this.sortCarsByYear}></Table>
             </div>
         );
     };
